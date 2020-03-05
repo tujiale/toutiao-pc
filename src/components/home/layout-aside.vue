@@ -1,5 +1,5 @@
 <template>
-  <div class="layout">
+  <div class="layout-aside">
        <!-- 头部图片 -->
       <div class='title'>
          <img src="../../assets/img/logo_admin.png" alt="">
@@ -53,7 +53,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
- .layout {
+ .layout-aside {
       background-color: red;
       width:230px;
       height: 100vh;

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/home'
 import Login from '@/views/login'
-import Second from '@/views/home/second'
+import SecondHome from '@/views/home/second-home'
 
 Vue.use(VueRouter)
 
@@ -18,7 +18,11 @@ const routes = [
     children: [
       { //
         path: '',
-        component: Second // 默认的二级路由组件
+        component: SecondHome // 默认的二级路由组件
+      }, {
+        //   path:'/home/comment', // 完整地址 评论列表的地址
+        path: 'comment', // 简写地址
+        component: () => import('@/views/comment') // 按需加载的方式
       }
     ]
   },

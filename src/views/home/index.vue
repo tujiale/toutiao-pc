@@ -3,14 +3,14 @@
    <el-container>
      <el-aside style="width:230px">
        <!-- 左侧导航组件 -->
-       <layout></layout>
+       <layout-aside></layout-aside>
      </el-aside>
      <!-- 右侧 再嵌套一个 el-container -->
      <el-container>
        <!-- 再上下布局 -->
        <el-header>
          <!-- 顶部操作栏组件 -->
-         <header></header>
+         <layout-header></layout-header>
        </el-header>
        <!-- 主要区域 el-main默认给加了 20px的 内边距-->
        <el-main style="padding: 0">
