@@ -44,10 +44,14 @@ export default {
         checked: false // 是否同意协议
       },
       loginRules: {
-        mobile: [{ required: true, message: '您的手机号不能为空' },
-          { pattern: /^1[3-9]\d{9}$/, message: '您的手机号格式不正确' }],
-        code: [{ required: true, message: '您的验证码不能为空' },
-          { pattern: /^\d{6}$/, message: '验证码应该是6位数' }],
+        mobile: [{ required: true, message: '您的手机号不能为空' }, {
+          pattern: /^1[3-9]\d{9}$/, // 正则表达式
+          message: '您的手机号格式不正确'
+        }],
+        code: [{ required: true, message: '您的验证码不能为空' }, {
+          pattern: /^\d{6}$/, // 要求6个数字
+          message: '验证码应该是6位数字'
+        }],
         checked: [{
           validator: function (rule, value, callback) {
             value ? callback() : callback(new Error('您必须同意我们的条款'))
@@ -74,13 +78,10 @@ export default {
           method: 'post'
         }).then(result => {
           // 把钥匙放在兜里 也就是把token存于 本地缓存
-          window.localStorage.setItem('user-token', result.data.data.token)
-          this.$router.push('/') // 登录成功 跳转到home页
+          window.localStorage.setItem('user-token', result.data.token)
+          this.$router.push('/home') // 登录成功 跳转到home页
         }).catch(() => {
-          this.$message({
-            message: '手机号或者验证码错误',
-            type: 'warning'
-          })
+          this.$message.error('用户名或者验证码错误')
         })
       })
     }
