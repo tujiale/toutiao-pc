@@ -43,6 +43,7 @@ export default {
       // 需要处理三种情况
       if (command === 'info') {
         // 点击了个人信息
+        alert('敬请期待')
       } else if (command === 'git') {
         // 如果点击了git地址就跳转到git仓库
         window.location.href = 'https://github.com/tujiale/toutiao-pc'
@@ -66,6 +67,7 @@ export default {
 
 <style lang='less' scoped>
   .layout-header {
+
       height: 60px;
       .left {
           i {

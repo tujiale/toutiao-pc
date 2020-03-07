@@ -31,8 +31,8 @@
                         <img :src="item.url" alt="">
                         <!-- 操作栏 可以flex布局-->
                         <el-row class='operate' type='flex' align="middle" justify="space-around">
-                           <i class='el-icon-star-off'></i>
-                           <i class='el-icon-delete'></i>
+                           <i @click="collectOrCancel(item)" :style="{color: item.is_collected ? 'yellow' : 'black'}" class='el-icon-star-off'></i>
+                           <i @click="delMaterial(item)"  class='el-icon-delete'></i>
                         </el-row>
                     </el-card>
                 </div>
@@ -65,6 +65,17 @@
               @current-change="changePage"
             ></el-pagination>
         </el-row>
+        <!-- 放置一个el-dialog组件 通过visible 属性进行true false设置 -->
+        <el-dialog @opened="openEnd" :visible="dialogVisible" @close="dialogVisible = false">
+          <!-- 放置一个走马灯组件 -->
+          <el-carousel ref="myCarousel" indicator-position="outside" height="400px">
+             <!-- 放置幻灯片循环项  根据 当前页list 循环-->
+             <el-carousel-item v-for="item in list" :key="item.id">
+                <!-- 放置图片 -->
+                 <img style="width:100%;height:100%" :src="item.url" alt="">
+             </el-carousel-item>
+          </el-carousel>
+        </el-dialog>
    </el-card>
 </template>
 
@@ -81,10 +92,57 @@ export default {
         currentPage: 1, // 默认第一页
         total: 0, // 当前总数
         pageSize: 6// 每页多少条
-      }
+      },
+      dialogVisible: false, // 控制显示隐藏
+      clickIndex: -1 // 点击的索引
     }
   },
   methods: {
+    openEnd () {
+      // 这个时候已经打开结束 ref已经有值 可以通过ref进行设置了
+      this.$refs.myCarousel.setActiveItem(this.clickIndex) // 尝试通过这种方式设置index
+    },
+    // 点击图片时调用
+    selectImg (index) {
+      this.clickIndex = index // 将索引赋值
+      this.dialogVisible = true // 打开索引
+    },
+    // 删除素材的方法
+    delMaterial (row) {
+      //  删除之前 应该友好的问候一下 是不是需要删除 ?
+      // confirm 也是promise
+      this.$confirm('您确定要删除该图片吗?', '提示').then(() => {
+        //  如果 确定删除  直接调用删除接口
+        this.$axios({
+          method: 'delete', // 请求类型 删除
+          url: `/user/images/${row.id}` // 请求地址
+        }).then(() => {
+        //  成功了应该干啥
+          this.getMaterial() // 重新加载数据
+          //  如果删除成功了 可以重新拉取数据 也可以 在前端删除  会在 移动端进行场景演示
+          // C 端场景  如果删除 或者修改数据 不会重新拉取数据 只会在前端修改对应的一条数据
+          // B 端场景 可以拉取数据
+        }).catch(() => {
+          this.$message.error('操作失败')
+        })
+      })
+    },
+    // 取消或者收藏素材
+    collectOrCancel (row) {
+      // 调用收藏和取消收藏接口
+      this.$axios({
+        method: 'put', // 请求类型
+        url: `/user/images/${row.id}`, // 请求地址
+        data: {
+          collect: !row.is_collected // true  or false  ?  取反
+        } // 放置body参数
+      }).then(() => {
+        //  成功了应该干啥
+        this.getMaterial() // 重新加载数据
+      }).catch(() => {
+        this.$message.error('操作失败')
+      })
+    },
     // 定义一个上传组件的方法
     uploadImg (params) {
       //  params.file 就是需要上传的图片文件

@@ -58,6 +58,7 @@ export default {
       width:230px;
       height: 100vh;
       .title {
+          width:230px;
           text-align: center;
           padding: 10px 0;
           img {
