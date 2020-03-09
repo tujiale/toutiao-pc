@@ -30,6 +30,9 @@ const routes = [
       }, {
         path: 'articles',
         component: () => import('@/views/articles') // 引入组件
+      }, {
+        path: 'publish/:articleId?', // 发布文章 加上问号表示 可有可无
+        component: () => import('@/views/publish') // 引入组件
       }
     ]
   },
