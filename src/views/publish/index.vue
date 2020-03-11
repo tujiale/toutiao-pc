@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import { getChannels } from '@/api/channels'
 export default {
   data () {
     return {
@@ -84,7 +85,7 @@ export default {
       // 监听$route的变化
       // to表示新的路由地址对象
       // from表示旧的路由地址对象
-      console.log(to) // 打印一下to属性
+      // console.log(to) // 打印一下to属性
       // 根据to属性中的 params的articleId的变化 来决定 是不是改变数据
       // 如果有articleId  应该获取编辑文章的数据
       // 如果没有articleId 应该将表单数据设置为空
@@ -140,12 +141,9 @@ export default {
       })
     },
     // 获取频道数据
-    getChannels () {
-      this.$axios({
-        url: '/channels' // 获取频道数据
-      }).then(result => {
-        this.channels = result.data.channels // 将频道数据赋值给本地数据
-      })
+    async  getChannels () {
+      const result = await getChannels()
+      this.channels = result.data.channels
     },
     // 发布
     publish (draft) {

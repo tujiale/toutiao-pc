@@ -4,7 +4,7 @@
       <!-- 等分为两列 -->
     <el-col class='left' :span="12">
        <!-- 图标 -->
-       <i class='el-icon-s-fold'></i>
+       <i  @click="collapse=!collapse" :class="{'el-icon-s-fold': !collapse, 'el-icon-s-unfold': collapse }"></i>
        <span>
            中国无上国宝--熊猫
        </span>
@@ -32,10 +32,18 @@
 </template>
 
 <script>
+import eventBus from '@/utils/eventBus' // 公共领域监听
 export default {
   data () {
     return {
-      userInfo: {} // 用户个人信息
+      userInfo: {}, // 用户个人信息
+      collapse: false // 开始不是折叠的
+    }
+  },
+  watch: {
+    collapse () {
+      // 此时说明 折叠状态变了  通知左侧导航组件
+      eventBus.$emit('changeCollapse') // 触发一个改变折叠状态的事件
     }
   },
   methods: {
@@ -52,14 +60,23 @@ export default {
         window.localStorage.removeItem('user-token') // 删除localstorage中某个选项
         this.$router.push('/login') // 跳回登录页  编程式导航
       }
+    },
+    getUserInfo () {
+      this.$axios({
+        url: '/user/profile' // 请求地址
+      }).then(result => {
+      // 如果加载成功了 我们要将数据赋值给 userInfo
+        this.userInfo = result.data
+      })
     }
   },
   created () {
-    this.$axios({
-      url: '/user/profile' // 请求地址
-    }).then(result => {
-      // 如果加载成功了 我们要将数据赋值给 userInfo
-      this.userInfo = result.data
+    //   获取用户的个人信息
+    this.getUserInfo() // 这是正常加载
+    eventBus.$on('updateUser', () => {
+      // 如果有人触发了 updateUser事件 就会进入到该函数
+      // 重新获取下信息即可
+      this.getUserInfo()
     })
   }
 }
